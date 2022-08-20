@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Article = require('./models/article');
 const articleRouter = require('./routes/articles');
 const app = express();
 
@@ -12,15 +13,11 @@ app.use(express.urlencoded({extended: false}));
 app.use('/articles', articleRouter);
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
-    const articles = [{
-        title: 'Test Article',
-        createdAt: new Date(),
-        description: 'Test description'
-    }]
-
-    res.render('articles/index', {articles})
+    const articles = await Article.find().sort({ createdAt: 'desc' });
+    
+    res.render('articles/index', { articles });
 });
 
 app.listen(5000, console.log('app listen on port 5000'));
